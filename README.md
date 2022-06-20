@@ -52,4 +52,8 @@ There is built in support for backlighting the keycaps or whatever you want to l
 connected to Arduino pin 18, and ground will cycle through brightness levels, L.E.D's are connected to Arduino pin 19 and ground.
 The state of brightness is written to EEPROM each press of the button, and will go back to that setting when power is applied again.
 
+At the moment, the OLED screen only displays a boot message that pays Homage to Hanna, then it will echo the button or switch that was
+pushed. After a short timeout it goes back to displaying "DRAKE" until the next button is pressed. Not sure what to use the display for?
+Any ideas or suggestions, let me know. I'd be happy to hear any suggestions on use.
+
 That's about it. Have fun and feel free to change up the code as you see fit. Have fun.
