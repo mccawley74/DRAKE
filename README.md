@@ -40,3 +40,16 @@ I'm sure there are more sites with info out there. A bit of reading and it's qui
      Keypad Col 3  | [9] A9      A10 [10] |  Switch One
                    |                      |
                    +----------------------+
+
+The box operated as a Windowd HID controller.
+
+There are 15 buttons that show up in the Windows joystick control panel.
+The Nine keypad buttons. All momentary.
+The Large red button, and small red button. All momentary.
+And the four switches, whitch when crossing from (off to on), or (on to off) will register as a button press.
+
+There is built in support for backlighting the keycaps or whatever you want to light up. Pressing a button
+connected to Arduino pin 18, and ground will cycle through brightness levels, L.E.D's are connected to Arduino pin 19 and ground.
+The state of brightness is written to EEPROM each press of the button, and will go back to that setting when power is applied again.
+
+That's about it. Have fun and feel free to change up the code as you see fit. Have fun.
