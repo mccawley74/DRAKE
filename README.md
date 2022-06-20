@@ -21,7 +21,7 @@ Pins 4, 5, 6, 7, 8, 9, All drive the button matrix. See the links below for sett
 I'm sure there are more sites with info out there. A bit of reading and it's quite understandable
 
 
-Arduino Pro Micro wiring diagram
+## Arduino Pro Micro wiring diagram
 
                          +-----+
                 +--------| USB |-------+
