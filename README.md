@@ -23,21 +23,21 @@ I'm sure there are more sites with info out there. A bit of reading and it's qui
 
 ## Arduino Pro Micro wiring diagram
 
-                         +-----+
-                +--------| USB |-------+
-                |        +-----+       |
-                | [1] TX         [RAW] |
-                | [0] RX         [GND] |  Ground
-       Ground   | [GND]          [RST] |
-       Ground   | [GND]          [VCC] |  Voltage for OLED
-      OLED SDA  | [2] SDA      A3 [21] |  Small Button
-      OLED SCL  | [3] SCL      A2 [20] |  Large Button
-  Keypad Row 1  | [4] A6       A1 [19] |  L.E.D. Driver
-  Keypad Row 2  | [5]          A0 [18] |  L.E.D. Control
-  Keypad Row 3  | [6] A7     SCLK [15] |  Switch Four
-  Keypad Col 1  | [7]        MISO [14] |  Switch Three
-  Keypad Col 2  | [8] A8     MOSI [16] |  Switch Two
-  Keypad Col 3  | [9] A9      A10 [10] |  Switch One
-                |                      |
-                +----------------------+
+#                         +-----+
+#                +--------| USB |-------+
+#                |        +-----+       |
+#                | [1] TX         [RAW] |
+#                | [0] RX         [GND] |  Ground
+#       Ground   | [GND]          [RST] |
+#       Ground   | [GND]          [VCC] |  Voltage for OLED
+#      OLED SDA  | [2] SDA      A3 [21] |  Small Button
+#      OLED SCL  | [3] SCL      A2 [20] |  Large Button
+#  Keypad Row 1  | [4] A6       A1 [19] |  L.E.D. Driver
+#  Keypad Row 2  | [5]          A0 [18] |  L.E.D. Control
+#  Keypad Row 3  | [6] A7     SCLK [15] |  Switch Four
+#  Keypad Col 1  | [7]        MISO [14] |  Switch Three
+#  Keypad Col 2  | [8] A8     MOSI [16] |  Switch Two
+#  Keypad Col 3  | [9] A9      A10 [10] |  Switch One
+#                |                      |
+#                +----------------------+
 //
