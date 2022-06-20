@@ -41,7 +41,7 @@ I'm sure there are more sites with info out there. A bit of reading and it's qui
                    |                      |
                    +----------------------+
 
-The box operated as a Windowd HID controller.
+The box operates as a Windowd HID controller. Showing up in Windows as a Joystick device
 
 There are 15 buttons that show up in the Windows joystick control panel.
 The Nine keypad buttons. All momentary.
