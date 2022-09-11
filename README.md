@@ -1,3 +1,8 @@
+# NOTE
+My dumb ass just reaqlized that I have the PWM L.E.D control on pin 18, this will NOT work.
+Until I edit the code, I suggest to swap pins 10 and 18. Pin 10 will work for PWM and is what I'vve used before.
+I never added L.E.Ds to this box until today, and just debugged this. Copied code from my other projects and didnt reallize.
+
 # DRAKE
 Drake button box
 
