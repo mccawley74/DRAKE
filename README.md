@@ -3,6 +3,11 @@ My dumb ass just reaqlized that I have the PWM L.E.D control on pin 18, this wil
 Until I edit the code, I suggest to swap pins 10 and 18. Pin 10 will work for PWM and is what I'vve used before.
 I never added L.E.Ds to this box until today, and just debugged this. Copied code from my other projects and didnt reallize.
 
+# UPDATE
+Added an additional file "hanna_keyb.ino" that operates by emulating key presses from a keyboard rather than a joystick.
+This code also asumes that the first switch in the box switch_1 is a two way switch to give three profiles for the keypad.
+Code should be pretty self explanitory. If not feel free to ask me any questions.
+
 # DRAKE
 Drake button box
 
