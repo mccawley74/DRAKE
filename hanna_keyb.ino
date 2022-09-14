@@ -112,13 +112,20 @@ int ledDuty = 0; // Variable to store the LED duty cycle
 uint8_t rowPins[ROWS] = {9, 8, 7}; // Connect to the row pinouts of the keypad
 uint8_t colPins[COLS] = {4, 5, 6}; // Connect to the column pinouts of the keypad
 
-// Button mapping, change to match keyboard mapping in game
+// Button mapping, change to match keyboard mapping in game, see website below for USB keyboard codes
 // https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/
+
 char button_map[3] = {KEY_LEFT_ALT, 'Y', 'r'}; // Eject, Eject, Flight Ready
-char switch_map[3] = {'l', 'k', 'n'}; // Light, VTOL, Landing gear
+char switch_map[3] = {'l', 'k', 'n'}; // Lights, VTOL, Landing gear
+
+// [Profile One] mobiglass, map, chat, weapons, shields, thrusters, power, 
 char key_map_one[9] = {KEY_F1, KEY_F2, KEY_F11, 'p', 'o', 'i', 'u', KEY_ESC, KEY_ESC};
-char key_map_two[9] = {KEY_F5, KEY_ESC, KEY_F6, KEY_ESC, KEY_F8, KEY_ESC, KEY_ESC, KEY_F7, KEY_ESC}; // Power Triangle
-char key_map_thr[9] = {0xE7, 0xE8, 0xE9, 0xE4, 0xE5, 0xE6, 0xE1, 0xE2, 0xE3}; // Shields | Maps numpad keys
+
+// [Profile Two] Power Triangle buttons form triangle, escape key as filler.
+char key_map_two[9] = {KEY_F5, KEY_ESC, KEY_F6, KEY_ESC, KEY_F8, KEY_ESC, KEY_ESC, KEY_F7, KEY_ESC};
+
+// [Profile Three] Shields | Maps to number pad keys
+char key_map_thr[9] = {0xE7, 0xE8, 0xE9, 0xE4, 0xE5, 0xE6, 0xE1, 0xE2, 0xE3}; 
 
 // Initialize an instance of class NewKeypad
 Keypad keypad_one = Keypad( makeKeymap(keymap_1), rowPins, colPins, ROWS, COLS);
