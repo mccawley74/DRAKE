@@ -17,8 +17,8 @@ The original design was by HANNAHB888 you can find her original artwork for this
 This box was designed off of her original artwork, and turned into a functional model, and code.
 You can find the 3D printable files over at Thingaverse at: https://www.thingiverse.com/thing:5414999
 
-The box uses an Arduino pro micro, and while there is no wiring schematic, the following is quite straigt forward.
-All pins are labled as to what they connect to.
+The box uses an Arduino pro micro, and while there is no wiring schematic, the following should be quite straight forward.
+All pins are labled as to what they connect to. All buttons and switches are GPIO to ground.
 
 The four switches connec to Arduino pins 15, 14, 16, 10, and the other end of the switch connects to ground.
 Arduino pins 19 drives L.E.D's if you want to run backlit keys. Arduino pin 18, is a button to ground that changes brioghtness.
