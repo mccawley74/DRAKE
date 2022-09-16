@@ -10,7 +10,7 @@
 //    without the express permission of {Tiny Gaming LLC}
 //
 //    Authors: McCawley Mark
-//    Version 1.0.0
+//    Version 1.2.33
 //
 //    Functions:
 //    void read_box_buttons(int polltime)
@@ -48,6 +48,7 @@
 //
 //-----------------------------------------------------------------------------
 
+// Includes
 #include <Keyboard.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -57,23 +58,8 @@
 #include <Keypad.h>
 #include <Arduino.h>
 
-// Keypad rows and columns
-const byte ROWS = 3; // Three rows
-const byte COLS = 3; // Three columns
-const long loop_interval = 10;  // Polling rate for main loop
-const long button_interval = 1;   // Polling rate for box buttons
-const long switch_interval = 1;   // Polling rate for box switches
-const long keypad_interval = 1;   // Polling rate for box keypad
-const bool initAutoSendState = true;  // Init send state always
-const long brightness_interval = 0;    // Polling rate for LED brightness button
-unsigned long display_counter;
-const unsigned long period = 300;  // OLED refresh period
-
-// Define the symbols on the buttons of the keypads
-char keymap_1[ROWS][COLS] ={{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
-
-// Define the OLED screen dimentions
-#define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+// Defines
+#define OLED_RESET -1
 #define LOGO_WIDTH 16
 #define ledControl 18
 #define keypad_row1 4
@@ -93,8 +79,19 @@ char keymap_1[ROWS][COLS] ={{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
 #define drake_switch_4 19
 #define drake_switch_5 1
 
-// Instantiate a Bounce object for the LED control button
-Bounce led = Bounce();
+// Constant declarations
+const byte ROWS = 3; // Three rows
+const byte COLS = 3; // Three columns
+const long loop_interval = 10;  // Polling rate for main loop
+const long button_interval = 1;   // Polling rate for box buttons
+const long switch_interval = 1;   // Polling rate for box switches
+const long keypad_interval = 1;   // Polling rate for box keypad
+const bool initAutoSendState = true;  // Init send state always
+const long brightness_interval = 0;    // Polling rate for LED brightness button
+unsigned long display_counter;
+const unsigned long period = 300;  // OLED refresh period
+char button_map[3] = {KEY_LEFT_ALT, 'Y', 'r'}; // Eject, Eject, Flight Ready
+char keymap_1[ROWS][COLS] ={{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};  // Define the symbols on the buttons of the keypads
 
 // Init variables to track button states
 char key_pressed;
@@ -112,23 +109,68 @@ int ledDuty = 0; // Variable to store the LED duty cycle
 uint8_t rowPins[ROWS] = {9, 8, 7}; // Connect to the row pinouts of the keypad
 uint8_t colPins[COLS] = {4, 5, 6}; // Connect to the column pinouts of the keypad
 
+// Instantiate a Bounce object for the LED control button
+Bounce led = Bounce();
+
+// Define a struct for OLED Menu and USB key presses
+typedef struct OLEDMENU {
+  char name[10];
+  char keyId;
+};
+
 // Button mapping, change to match keyboard mapping in game, see website below for USB keyboard codes
 // https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/
+//
+// Below structs hold the string to display on the OLED screen, and the corrisponding key to press
 
-char button_map[3] = {KEY_LEFT_ALT, 'Y', 'r'}; // Eject, Eject, Flight Ready
-char switch_map[3] = {'l', 'k', 'n'}; // Lights, VTOL, Landing gear
+// [Switches 2,3,4] Lights, VTOL, Landing gear
+OLEDMENU switchMenu[3]={
+  {"LIGHTS", 'l'},
+  {"VTOL", 'k'},
+  {"GEAR", 'n'},
+};
 
-// [Profile One] mobiglass, map, chat, weapons, shields, thrusters, power, 
-char key_map_one[9] = {KEY_F1, KEY_F2, KEY_F11, 'p', 'o', 'i', 'u', KEY_ESC, KEY_ESC};
+// [Profile One] mobiglass, map, chat, weapons, shields, thrusters, power, QT, ATC
+OLEDMENU defaultMenu[9]={
+  {"MOBIGLAS", KEY_F1},
+  {"MAP", KEY_F2},
+  {"COMMS", KEY_F12},
+  {"WEAPONS", 'p'},
+  {"SHIELDS", 'o'},
+  {"THRUSTERS", 'i'},
+  {"POWER", 'u'},
+  {"QUANTUM", 'b'},
+  {"ATC", KEY_INSERT},
+};
 
 // [Profile Two] Power Triangle buttons form triangle, escape key as filler.
-char key_map_two[9] = {KEY_F5, KEY_ESC, KEY_F6, KEY_ESC, KEY_F8, KEY_ESC, KEY_ESC, KEY_F7, KEY_ESC};
+OLEDMENU powerTriangle[9]={
+  {"WEAPONS", KEY_F5},
+  {"N/A", KEY_ESC},
+  {"SHIELDS", KEY_F7},
+  {"N/A", KEY_ESC},
+  {"RESET", KEY_F8},
+  {"N/A", KEY_ESC},
+  {"N/A", KEY_ESC},
+  {"THRUSTERS", KEY_F6},
+  {"N/A", KEY_ESC},
+};
 
 // [Profile Three] Shields | Maps to number pad keys
-char key_map_thr[9] = {0xE7, 0xE8, 0xE9, 0xE4, 0xE5, 0xE6, 0xE1, 0xE2, 0xE3}; 
+OLEDMENU shieldMenu[9]={
+  {"N/A", 0xE7},
+  {"FWD", 0xE8},
+  {"N/A", 0xE9},
+  {"LEFT", 0xE4},
+  {"RESET", 0xE5},
+  {"RIGHT", 0xE6},
+  {"N/A", 0xE1},
+  {"BACK", 0xE2},
+  {"N/A", 0xE3},
+};
 
 // Initialize an instance of class NewKeypad
-Keypad keypad_one = Keypad( makeKeymap(keymap_1), rowPins, colPins, ROWS, COLS);
+Keypad keypad_one = Keypad(makeKeymap(keymap_1), rowPins, colPins, ROWS, COLS);
 
 // Initialize an instance of OLED screen
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -153,7 +195,6 @@ void read_box_buttons(int polltime){
     delay(50);
     draw_text("BUTTON: 1", 3, 14, 2, true, true); // Draw text on the screen
   }
-  
   if (drake_button_2_current == LOW && drake_button_2_last == HIGH) {
     Keyboard.press(button_map[0]);
     Keyboard.press(button_map[1]);
@@ -165,7 +206,6 @@ void read_box_buttons(int polltime){
     delay(50);
     draw_text("BUTTON: 2", 3, 14, 2, true, true); // Draw text on the screen
   }
-
   drake_button_1_last = drake_button_1_current;
   drake_button_2_last = drake_button_2_current;
   delay(polltime);
@@ -194,28 +234,31 @@ void read_box_switch(int polltime){
   // Start the polling for box switch (2)
   int drake_switch_2_current = !digitalRead(drake_switch_2);
   if (drake_switch_2_current != drake_switch_2_last) {
-    press_key(switch_map[0]);
+    press_key(switchMenu[0].keyId);
+    draw_text(String(switchMenu[0].name), 3, 14, 2, true, true); // Draw text on the screen
     drake_switch_2_last = drake_switch_2_current;
   }
   // Start the polling for box switch (3)
   int drake_switch_3_current = !digitalRead(drake_switch_3);
   if (drake_switch_3_current != drake_switch_3_last) {
-    press_key(switch_map[1]);
+    press_key(switchMenu[1].keyId);
+    draw_text(String(switchMenu[1].name), 3, 14, 2, true, true); // Draw text on the screen
     drake_switch_3_last = drake_switch_3_current;
   }
   // Start the polling for box switch (4 Left)
   int drake_switch_4_current = !digitalRead(drake_switch_4);
   if (drake_switch_4_current != drake_switch_4_last) {
-    press_key(switch_map[2]);
+    press_key(switchMenu[2].keyId);
+    draw_text(String(switchMenu[2].name), 3, 14, 2, true, true); // Draw text on the screen
     drake_switch_4_last = drake_switch_4_current;
   }
   delay(polltime);
 }
 
 /*!
- * @function    Pressed a keyboard key
- * @abstract    press key
- * @discussion  press key
+ * @function    press_key
+ * @abstract    press a key
+ * @discussion  press a key on the keyboard
  * @param       key The key to press
  * @result      void
 */
@@ -238,13 +281,17 @@ void read_matrix_buttons(int polltime) {
     for (int i = 0; i < LIST_MAX; i++) {
       if ( keypad_one.key[i].stateChanged ) {
         if (profile == 1) {
-          key_pressed = key_map_one[keypad_one.key[i].kcode];
+          key_pressed = defaultMenu[keypad_one.key[i].kcode].keyId;
+          draw_text(String(defaultMenu[keypad_one.key[i].kcode].name), 3, 14, 2, true, true); // Draw text on the screen
         } else if (profile == 2) {
-          key_pressed = key_map_two[keypad_one.key[i].kcode];
+          key_pressed = powerTriangle[keypad_one.key[i].kcode].keyId;
+          draw_text(String(powerTriangle[keypad_one.key[i].kcode].name), 3, 14, 2, true, true); // Draw text on the screen
         } else if (profile == 3) {
-          key_pressed = key_map_thr[keypad_one.key[i].kcode];
+          key_pressed = shieldMenu[keypad_one.key[i].kcode].keyId;
+          draw_text("SHD:", 3, 14, 2, false, true); // Draw text on the screen
+          draw_text(String(shieldMenu[keypad_one.key[i].kcode].name), 53, 14, 2, true, false); // Draw text on the screen
         } else {
-          key_pressed = key_map_one[keypad_one.key[i].kcode];
+          key_pressed = defaultMenu[keypad_one.key[i].kcode].keyId;
         }
         switch (keypad_one.key[i].kstate) {
           case PRESSED:
@@ -252,8 +299,6 @@ void read_matrix_buttons(int polltime) {
             break;
           case RELEASED:
             Keyboard.release(key_pressed);
-            draw_text("KEYPAD:", 3, 14, 2, false, true); // Draw text on the screen
-            draw_text(String(keypad_one.key[i].kcode), 95, 14, 2, true, false); // Draw text on the screen
             break;
           case IDLE:
           case HOLD:
@@ -350,7 +395,6 @@ void draw_text(String text, int x, int y,int size, boolean d, boolean c) {
  * @result      none
 */
 void setup() {
-
   Serial.begin(9600);
 
   // Set internal pullups on buttons
@@ -379,7 +423,7 @@ void setup() {
     for(;;); // Don't proceed, loop forever
   }
 
-  // Setup initial  display
+  // Setup initial OLED display
   display_counter = 0;
   display.display();
   display.setRotation(2); // Screen mounted upside down, so rotate 90 twice
@@ -399,8 +443,8 @@ void setup() {
   ledDuty = EEPROM.read(0);
   analogWrite(ledPin, ledDuty);
   delay(50);
-  
-  // display.drawRect(1, 1, 126,31, WHITE);
+
+  // Draw initial message on the OLED screen
   draw_text("DRAKE", 30, 14, 2, true, true); // Draw text on the screen
   delay(150);
   set_profile(!digitalRead(drake_switch_1), !digitalRead(drake_switch_5));
