@@ -9,7 +9,7 @@ This code also asumes that the first switch in the box switch_1 is a two way swi
 Code should be pretty self explanitory. If not feel free to ask me any questions.
 
 # DRAKE
-Drake button box
+### 3D Model of the finished box
 ![Button Box](box.png)
 
 This is the code for the windows HID button box in the style of Star Citizen DRAKE design.
