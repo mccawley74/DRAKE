@@ -8,6 +8,8 @@ Added an additional file "hanna_keyb.ino" that operates by emulating key presses
 This code also asumes that the first switch in the box switch_1 is a two way switch to give three profiles for the keypad.
 Code should be pretty self explanitory. If not feel free to ask me any questions.
 
+See the original button box at: [https://github.com/mccawley74/Drake-Button-Box-2.0]
+
 # DRAKE
 ### 3D Model of the finished box
 ![Button Box](box.png)
